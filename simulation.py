@@ -28,16 +28,13 @@ class DreamSimulator:
         self.P = P
         self.emotion_frac = emotion_frac
         self.emotion_nodes = np.arange(int(N * emotion_frac))
-        # create patterns (binary -1,+1) with small overlap structure
         patterns = np.random.choice([-1, 1], size=(P, N))
         for i in range(1, P):
             patterns[i] = np.where(np.random.rand(N) < 0.85, patterns[i], patterns[i-1])
         self.patterns = patterns
-        # pattern depths (attractor strengths) - baseline 1.0
         depths = np.ones(P)
         depths[deep_index] = deep_strength  # make one attractor deeper
         self.depths = depths
-        # Hebbian-like weighted matrix with pattern depths
         W = np.zeros((N, N))
         for mu in range(P):
             W += depths[mu] * np.outer(patterns[mu], patterns[mu])
@@ -121,3 +118,4 @@ class DreamSimulator:
             'final_coherence': self._coherence(state),
             'timesteps': len(TDE)
         }
+
